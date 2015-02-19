@@ -39,10 +39,6 @@
             android:label="@string/title_activity_game" >
         </activity>
 
-        <service
-            android:name=".ParserService"
-            android:exported="false" >
-        </service>
     </application>
 
 </manifest>
