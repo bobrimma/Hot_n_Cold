@@ -87,9 +87,9 @@ public class MapActivity extends FragmentActivity
                                 Intent startGame = new Intent(getApplicationContext(), GameActivity.class);
                                 startGame.putExtra(EXTRA_LATLNG, latLng);
                                 startGame.putExtra(EXTRA_MYLATLNG, myLL);
-                                startGame.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                                startGame.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                //TODO: поиграться с флагами, чтобы из активити игры нельзя было уйти на карту через "Назад"
                                 startActivity(startGame);
-                                finish();
                             }
                         });
                 AlertDialog alert = adBuilder.create();
@@ -102,7 +102,7 @@ public class MapActivity extends FragmentActivity
     public void onConnected(Bundle bundle) {
         while(!apiClient.isConnected()){
             try {
-                Thread.sleep(100);
+                Thread.sleep(100);// это очень грязный хак, но иначе иногда вылазит "GoogleApiClient isn't yet ready"
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
