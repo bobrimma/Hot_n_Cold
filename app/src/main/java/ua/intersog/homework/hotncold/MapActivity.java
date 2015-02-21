@@ -40,15 +40,6 @@ public class MapActivity extends FragmentActivity
     }
 
     @Override
-    protected void onPause() {
-        if (apiClient.isConnected()) {
-            LocationServices.FusedLocationApi.removeLocationUpdates(apiClient, this);
-            apiClient.disconnect();
-        }
-        super.onPause();
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
         if (GooglePlayServicesUtil.isGooglePlayServicesAvailable(this) == ConnectionResult.SUCCESS) {
@@ -59,6 +50,15 @@ public class MapActivity extends FragmentActivity
                     .build();
             apiClient.connect();
         }
+    }
+
+    @Override
+    protected void onPause() {
+        if (apiClient.isConnected()) {
+            LocationServices.FusedLocationApi.removeLocationUpdates(apiClient, this);
+            apiClient.disconnect();
+        }
+        super.onPause();
     }
 
     private void assignMap() {

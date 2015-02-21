@@ -26,10 +26,9 @@ public class MyPoint {
         z = sinLat * radius;
     }
 
-    public static double getAzimuth(LatLng a, LatLng b) {
-        MyPoint bp = new MyPoint(b);
-
-        MyPoint br = MyPoint.rotateGlobe(b, a, bp.radius);
+    public static double getAzimuth(LatLng startPoint, LatLng endPoint) {
+        MyPoint bp = new MyPoint(startPoint);
+        MyPoint br = MyPoint.rotateGlobe(startPoint, endPoint, bp.radius);
         double theta = Math.atan2(br.z, br.y) * 180.0 / Math.PI;
         double azimuth = 90.0 - theta;
         if (azimuth < 0.0) {
