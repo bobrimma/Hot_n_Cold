@@ -42,7 +42,7 @@ public class SensorsService extends Service
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-     //   Log.d("mygame", "onStartCommand");
+        //   Log.d("mygame", "onStartCommand");
 
         apiClient = new GoogleApiClient.Builder(this)
                 .addApi(LocationServices.API)
@@ -61,7 +61,7 @@ public class SensorsService extends Service
 
     @Override
     public void onDestroy() {
-       // Log.d("mygame", "onDestroy");
+        // Log.d("mygame", "onDestroy");
         if (apiClient.isConnected()) {
             LocationServices.FusedLocationApi.removeLocationUpdates(apiClient, this);
             apiClient.disconnect();
