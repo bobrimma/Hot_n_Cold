@@ -2,14 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-<<<<<<< HEAD
-=======
-      <module fileurl="file://$PROJECT_DIR$/Hot'n'Cold.iml" filepath="$PROJECT_DIR$/Hot'n'Cold.iml" />
-<<<<<<< HEAD
->>>>>>> f9170efaf436ef961c4a3f966a4d268eea3d22d4
       <module fileurl="file://$PROJECT_DIR$/Hot_n_Cold.iml" filepath="$PROJECT_DIR$/Hot_n_Cold.iml" />
-=======
->>>>>>> parent of f9170ef... compass works
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
