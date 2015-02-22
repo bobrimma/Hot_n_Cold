@@ -38,6 +38,7 @@
             android:name=".GameActivity"
             android:label="@string/title_activity_game" >
         </activity>
+        <service android:name=".GameService"> </service>
 
         <service
             android:name=".SensorsService"

@@ -4,10 +4,19 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+<<<<<<< HEAD
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.widget.ProgressBar;
+=======
+import android.hardware.SensorManager;
+import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+>>>>>>> f9170efaf436ef961c4a3f966a4d268eea3d22d4
 import android.widget.TextView;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -16,6 +25,7 @@ import com.google.android.gms.maps.model.LatLng;
 public class GameActivity extends ActionBarActivity {
 
     public static final String LOG_TAG = "HnC: GameActivity";
+<<<<<<< HEAD
     private TextView differenceTV;
     private TextView azimuthTV;
     private TextView compassTV;
@@ -33,13 +43,28 @@ public class GameActivity extends ActionBarActivity {
     private final String COLD="Cold";
     private final String VERY_COLD="Very cold";
 
+=======
+    public static final String KEY_AZIMUTH = "AZIMUTH";
+    public static final String PROJECT_PKJ = "ua.intersog.homework.hotncold";
+
+    private TextView azimuthTV;
+    private TextView compassTV;
+//    private TextView latitudeTV;
+//    private TextView longitudeTV;
+//    private TextView azimuthCurTV;
+    private LatLng destLL;
+    private LatLng myLL;
+    private Intent gameService;
+>>>>>>> f9170efaf436ef961c4a3f966a4d268eea3d22d4
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d("mygame", "onCreate GameActivity");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
         destLL = getIntent().getParcelableExtra(MapActivity.EXTRA_LATLNG);
         myLL = getIntent().getParcelableExtra(MapActivity.EXTRA_MYLATLNG);
+<<<<<<< HEAD
 
         differenceTV = (TextView) findViewById(R.id.difference);
         azimuthTV = (TextView) findViewById(R.id.azimuth);
@@ -47,6 +72,24 @@ public class GameActivity extends ActionBarActivity {
         resultTV = (TextView) findViewById(R.id.resultTV);
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
         mProgressBar.setMax(100);
+=======
+        azimuthTV = (TextView) findViewById(R.id.azimuthTV);
+        double azimuth = MyPoint.getAzimuth(destLL, myLL);
+        azimuthTV.setText(Double.toString(azimuth));
+
+        compassTV = (TextView) findViewById(R.id.compassTV);
+//        latitudeTV = (TextView) findViewById(R.id.latitudeTV);
+//        longitudeTV = (TextView) findViewById(R.id.longitudeTV);
+//        azimuthCurTV = (TextView) findViewById(R.id.azimuthCurTV);
+
+        ResultReceiver receiver = new ResultReceiver();
+        registerReceiver(receiver, new IntentFilter(PROJECT_PKJ));
+
+        gameService = new Intent(GameActivity.this, GameService.class);
+        gameService.putExtra(KEY_AZIMUTH, azimuth);
+        startService(gameService);
+
+>>>>>>> f9170efaf436ef961c4a3f966a4d268eea3d22d4
     }
 
 
@@ -115,5 +158,29 @@ public class GameActivity extends ActionBarActivity {
         mProgressBar.setProgressDrawable(getResources().getDrawable(type));
         resultTV.setTextColor(Color.parseColor(color));
         resultTV.setText(text);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+    }
+
+    class ResultReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d("mygame", "onReceive");
+            double receivedCompass = intent.getDoubleExtra(GameService.KEY_COMPASS_AZIMUTH, 361.0);
+            compassTV.setText(Double.toString(receivedCompass));
+
+//            double latitude = intent.getDoubleExtra(GameService.KEY_LATITUDE, 0.0);
+//            double longitude = intent.getDoubleExtra(GameService.KEY_LONGITUDE, 0.0);
+//            latitudeTV.setText(Double.toString(latitude));
+//            longitudeTV.setText(Double.toString(longitude));
+//            destLL = new LatLng(latitude, longitude);
+//            azimuthCurTV.setText(Double.toString(MyPoint.getAzimuth(destLL, myLL)));
+
+        }
     }
 }
