@@ -28,20 +28,22 @@ public class SensorsService extends Service
     public static final String EXTRA_AZIMUTH = "azimuthValue";
     private SensorManager mSensorManager;
     private GoogleApiClient apiClient;
-    private float[] mGravity;
-    private float[] mGeomagnetic;
     private LatLng destLL;
     private LatLng myLL;
     private Sensor accelerometer;
     private Sensor magnetometer;
-
+    private float[] mLastAccelerometer = new float[3];
+    private float[] mLastMagnetometer = new float[3];
+    private boolean mLastAccelerometerSet = false;
+    private boolean mLastMagnetometerSet = false;
+    private float[] mR = new float[9];
+    private float[] mOrientation = new float[3];
 //  Service lifecycle section
-
-    public SensorsService() {
-    }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+     //   Log.d("mygame", "onStartCommand");
+
         apiClient = new GoogleApiClient.Builder(this)
                 .addApi(LocationServices.API)
                 .addConnectionCallbacks(this)
@@ -52,11 +54,18 @@ public class SensorsService extends Service
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         accelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         magnetometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+        mSensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_UI);
+        mSensorManager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_UI);
         return super.onStartCommand(intent, flags, startId);
     }
 
     @Override
     public void onDestroy() {
+       // Log.d("mygame", "onDestroy");
+        if (apiClient.isConnected()) {
+            LocationServices.FusedLocationApi.removeLocationUpdates(apiClient, this);
+            apiClient.disconnect();
+        }
         mSensorManager.unregisterListener(this);
         super.onDestroy();
     }
@@ -72,25 +81,25 @@ public class SensorsService extends Service
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER)
-            mGravity = event.values;
-        if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD)
-            mGeomagnetic = event.values;
-        if (mGravity != null && mGeomagnetic != null) {
-            float R[] = new float[9];
-            float I[] = new float[9];
-            boolean success = SensorManager.getRotationMatrix(R, I, mGravity, mGeomagnetic);
-            if (success) {
-                float orientation[] = new float[3];
-                SensorManager.getOrientation(R, orientation);
-                float azimutCompass = orientation[0];
-                double azimuthInDegrees = (Math.toDegrees(azimutCompass) + 360) % 360;
-                Intent newData = new Intent(ACTION_NEWDATA);
-                newData.putExtra(EXTRA_COMPASS, azimuthInDegrees);
-                newData.putExtra(EXTRA_AZIMUTH, MyPoint.getAzimuth(myLL, destLL));
-                sendBroadcast(newData);
-                Log.d("mygame", "compass: " + azimuthInDegrees);
-            }
+        // Log.d("mygame", "onSensorChanged");
+        if (event.sensor == accelerometer) {
+            System.arraycopy(event.values, 0, mLastAccelerometer, 0, event.values.length);
+            mLastAccelerometerSet = true;
+        } else if (event.sensor == magnetometer) {
+            System.arraycopy(event.values, 0, mLastMagnetometer, 0, event.values.length);
+            mLastMagnetometerSet = true;
+        }
+        if (mLastAccelerometerSet && mLastMagnetometerSet) {
+            SensorManager.getRotationMatrix(mR, null, mLastAccelerometer, mLastMagnetometer);
+            SensorManager.getOrientation(mR, mOrientation);
+            float azimuthInRadians = mOrientation[0];
+            float azimuthInDegress = (float) (Math.toDegrees(azimuthInRadians) + 360) % 360;
+            Intent newData = new Intent(ACTION_NEWDATA);
+            newData.putExtra(EXTRA_COMPASS, azimuthInDegress);
+            newData.putExtra(EXTRA_AZIMUTH,(float)MyPoint.getAzimuth(myLL, destLL));
+            sendBroadcast(newData);
+            //    Log.d("mygame", "compass: " + azimuthInDegress);
+
         }
     }
 
@@ -117,8 +126,6 @@ public class SensorsService extends Service
                 .setFastestInterval(2500)
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         LocationServices.FusedLocationApi.requestLocationUpdates(apiClient, request, this);
-        mSensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_UI);
-        mSensorManager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_UI);
     }
 
     @Override
