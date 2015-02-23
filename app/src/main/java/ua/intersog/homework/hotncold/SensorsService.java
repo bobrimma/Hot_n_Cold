@@ -26,6 +26,8 @@ public class SensorsService extends Service
     public static final String ACTION_NEWDATA = "ua.intersog.homework.hotncold.new_sensor_data";
     public static final String EXTRA_COMPASS = "compassValue";
     public static final String EXTRA_AZIMUTH = "azimuthValue";
+    public static final String EXTRA_DIST = "distanceValue";
+
     private SensorManager mSensorManager;
     private GoogleApiClient apiClient;
     private LatLng destLL;
@@ -97,6 +99,7 @@ public class SensorsService extends Service
             Intent newData = new Intent(ACTION_NEWDATA);
             newData.putExtra(EXTRA_COMPASS, azimuthInDegress);
             newData.putExtra(EXTRA_AZIMUTH,(float)MyPoint.getAzimuth(myLL, destLL));
+            newData.putExtra(EXTRA_DIST,(int)MyPoint.getDistance(myLL, destLL));
             sendBroadcast(newData);
             //    Log.d("mygame", "compass: " + azimuthInDegress);
 

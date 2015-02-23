@@ -69,4 +69,30 @@ public class MyPoint {
         double bz = (brp.x * asin) + (brp.z * acos);
         return new MyPoint(bx, by, bz, bradius);
     }
+
+    public static double getDistance(LatLng a, LatLng b) {
+
+//      latitude and longitude in radians
+        double radianLatA = a.latitude * Math.PI / 180.0;
+        double radianLatB = b.latitude * Math.PI / 180.0;
+        double radianLonA = a.longitude * Math.PI / 180.0;
+        double radianLonB = b.longitude * Math.PI / 180.0;
+
+//      cos and sin for latitudes and for difference between longitude
+        double cosLatA = Math.cos(radianLatA);
+        double cosLatB = Math.cos(radianLatB);
+        double sinLatA = Math.sin(radianLatA);
+        double sinLatB = Math.sin(radianLatB);
+        double delta = radianLonB - radianLonA;
+        double cosDelta = Math.cos(delta);
+        double sinDelta = Math.sin(delta);
+
+//      counting distance
+        double y = Math.sqrt(Math.pow(cosLatB * sinDelta, 2) + Math.pow(cosLatA * sinLatB - sinLatA * cosLatB * cosDelta, 2));
+        double x = sinLatA * sinLatB + cosLatA * cosLatB * cosDelta;
+        final double radius = 6372795.0;
+        double dist = Math.atan2(y, x) * radius;
+
+        return dist;
+    }
 }

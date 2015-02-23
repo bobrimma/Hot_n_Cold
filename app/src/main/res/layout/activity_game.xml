@@ -7,90 +7,23 @@
     tools:context="ua.intersog.homework.hotncold.GameActivity">
 
 
-    <TableLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/tableLayout">
-
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="Delta: "
-                android:id="@+id/differenceLbl"
-                android:layout_margin="5dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:id="@+id/difference"
-                android:layout_margin="5dp" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="Azimuth: "
-                android:id="@+id/azimuthLbl"
-                android:layout_margin="5dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:id="@+id/azimuth"
-                android:layout_margin="5dp" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="Compass: "
-                android:id="@+id/compassLbl"
-                android:layout_margin="5dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:id="@+id/compassValue"
-                android:layout_margin="5dp" />
-        </TableRow>
-    </TableLayout>
-
     <ProgressBar
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="50dip"
-        android:layout_height="260dip"
+        android:layout_height="280dip"
         android:id="@+id/progressBar"
         android:progressDrawable="@drawable/vertical_cold"
         android:layout_centerHorizontal="true"
         android:indeterminate="false"
-        android:layout_below="@+id/tableLayout"
-        android:layout_marginTop="50dp" />
+        android:layout_marginTop="89dp" />
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="350dip"
         android:id="@+id/imageView"
         android:src="@drawable/thermometer"
-        android:layout_below="@+id/tableLayout"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -98,7 +31,27 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:id="@+id/resultTV"
         android:layout_below="@+id/imageView"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Distance to point: "
+        android:id="@+id/distanceLbl"
+        android:layout_below="@+id/resultTV"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="15dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:id="@+id/distanceTV"
+        android:layout_alignTop="@+id/distanceLbl"
+        android:layout_toRightOf="@+id/distanceLbl"
+        android:layout_toEndOf="@+id/distanceLbl" />
 
 
 </RelativeLayout>

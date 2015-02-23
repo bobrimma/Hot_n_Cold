@@ -1,26 +1,25 @@
 
-        package ua.intersog.homework.hotncold;
+package ua.intersog.homework.hotncold;
 
-        import android.content.BroadcastReceiver;
-        import android.content.Context;
-        import android.content.Intent;
-        import android.content.IntentFilter;
-        import android.graphics.Color;
-        import android.os.Bundle;
-        import android.support.v7.app.ActionBarActivity;
-        import android.widget.ProgressBar;
-        import android.widget.TextView;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
-        import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLng;
 
 
 public class GameActivity extends ActionBarActivity {
 
     public static final String LOG_TAG = "HnC: GameActivity";
-    private TextView differenceTV;
-    private TextView azimuthTV;
-    private TextView compassTV;
+
     private TextView resultTV;
+    private TextView distanceTV;
 
     private LatLng destLL;
     private LatLng myLL;
@@ -29,10 +28,12 @@ public class GameActivity extends ActionBarActivity {
     private ProgressBar mProgressBar;
 
     private int gameResult = 0;
-    private final String VERY_HOT="Very hot";
-    private final String HOT="Hot";
-    private final String COLD="Cold";
-    private final String VERY_COLD="Very cold";
+    private final String VERY_HOT = "Very hot: ";
+    private final String HOT = "Hot: ";
+    private final String COLD = "Cold: ";
+    private final String VERY_COLD = "Very cold: ";
+    private final String GAME_FINISHED = "Game finished. You've reached the point! ";
+
 
 
     @Override
@@ -42,12 +43,12 @@ public class GameActivity extends ActionBarActivity {
         destLL = getIntent().getParcelableExtra(MapActivity.EXTRA_LATLNG);
         myLL = getIntent().getParcelableExtra(MapActivity.EXTRA_MYLATLNG);
 
-        differenceTV = (TextView) findViewById(R.id.difference);
-        azimuthTV = (TextView) findViewById(R.id.azimuth);
-        compassTV = (TextView) findViewById(R.id.compassValue);
+
         resultTV = (TextView) findViewById(R.id.resultTV);
+        distanceTV = (TextView) findViewById(R.id.distanceTV);
+
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
-        mProgressBar.setMax(100);
+        mProgressBar.setMax(180);
     }
 
 
@@ -79,43 +80,40 @@ public class GameActivity extends ActionBarActivity {
 
             float azimuth = intent.getFloatExtra(SensorsService.EXTRA_AZIMUTH, 361);
             float compass = intent.getFloatExtra(SensorsService.EXTRA_COMPASS, 361);
+            int distance = intent.getIntExtra(SensorsService.EXTRA_DIST, -1);
             float diff = (Math.abs(azimuth - compass) < 180) ? Math.abs(azimuth - compass) : 360 - Math.abs(azimuth - compass);
-            int azimuthInt = (int) azimuth;
-            int compassInt = (int) compass;
             int diffInt = (int) diff;
-            azimuthTV.setText(Integer.toString(azimuthInt) + (char) 176);
-            compassTV.setText(Integer.toString(compassInt) + (char) 176);
-            differenceTV.setText(Integer.toString(diffInt) + (char) 176);
-            setGameProgress(diffInt);
+            setGameProgress(diffInt, distance);
+
 
         }
     }
 
-    private void setGameProgress(int diffInt) {
-        if (diffInt < 20) {
-            configProgressBar(R.drawable.vertical_hot,"#FF0033",VERY_HOT);
-            gameResult = (int) (100 - diffInt * 0.8);
-
-        } else if (diffInt <= 50) {
-            configProgressBar(R.drawable.vertical_hot,"#FF3366",HOT);
-            gameResult = 100 - diffInt;
-
-        } else if (diffInt > 50 && diffInt < 100) {
-            configProgressBar(R.drawable.vertical_cold,"#0099FF",COLD);
-            gameResult = (int) (50 - diffInt * 0.15);
-
-        } else if (diffInt >= 100) {
-            configProgressBar(R.drawable.vertical_cold,"#0033FF",VERY_COLD);
-            gameResult = (int) (50 - diffInt * 0.25);
-
+    private void setGameProgress(int diffInt, int distance) {
+        gameResult = 180 - diffInt;
+        if (gameResult > 178 && distance <= 1) {
+            configProgressBar(R.drawable.vertical_very_hot, "#FF0000", GAME_FINISHED, gameResult);
+            Intent sensorsStop = new Intent(this, SensorsService.class);
+            stopService(sensorsStop);
+        } else if (gameResult > 150) {
+            configProgressBar(R.drawable.vertical_very_hot, "#FF0000", VERY_HOT, gameResult);
+        } else if (gameResult <= 150 && gameResult >= 100) {
+            configProgressBar(R.drawable.vertical_hot, "#FF3366", HOT, gameResult);
+        } else if (gameResult < 100 && gameResult > 50) {
+            configProgressBar(R.drawable.vertical_cold, "#0033FF", COLD, gameResult);
+        } else if (diffInt >= 50) {
+            configProgressBar(R.drawable.vertical_very_cold, "#0099FF", VERY_COLD, gameResult);
         }
         mProgressBar.setProgress(gameResult);
+        distanceTV.setText(Integer.toString(distance) + " metres");
+
     }
 
-    private void configProgressBar(int type, String color, String text){
+    private void configProgressBar(int type, String color, String text, int temperature) {
         mProgressBar.setProgressDrawable(getResources().getDrawable(type));
         resultTV.setTextColor(Color.parseColor(color));
-        resultTV.setText(text);
+        resultTV.setText(text + Integer.toString(temperature) + (char) 176);
+
     }
 }
 
