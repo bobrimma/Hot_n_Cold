@@ -70,6 +70,7 @@ public class MapActivity extends FragmentActivity
 
     private void setUpMap() {
         Location myLoc = LocationServices.FusedLocationApi.getLastLocation(apiClient);
+        mMap.clear();
         myLL = new LatLng(myLoc.getLatitude(), myLoc.getLongitude());
         myMarker = mMap.addMarker(new MarkerOptions()
                 .position(myLL)
