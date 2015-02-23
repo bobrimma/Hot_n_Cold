@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">Hot\'n\'Cold</string>
     <string name="title_activity_map">Map</string>
+    <string name="target_set">Точка установлена, удачи ;)</string>
+    <string name="title_activity_game">GameActivity</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
 </resources>
