@@ -56,8 +56,8 @@ public class SensorsService extends Service
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         accelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         magnetometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-        mSensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_UI);
-        mSensorManager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_UI);
+        mSensorManager.registerListener(this, accelerometer, 500000);
+        mSensorManager.registerListener(this, magnetometer, 500000);
         return super.onStartCommand(intent, flags, startId);
     }
 
