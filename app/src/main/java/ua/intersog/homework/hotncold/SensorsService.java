@@ -125,8 +125,8 @@ public class SensorsService extends Service
             }
         }
         LocationRequest request = new LocationRequest()
-                .setInterval(3000)
-                .setFastestInterval(2500)
+                .setInterval(1000)
+                .setFastestInterval(500)
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         LocationServices.FusedLocationApi.requestLocationUpdates(apiClient, request, this);
     }
