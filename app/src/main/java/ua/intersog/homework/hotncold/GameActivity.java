@@ -24,6 +24,7 @@ public class GameActivity extends ActionBarActivity {
     private LatLng destLL;
     private LatLng myLL;
     private CompassBroadReceiver receiver;
+    private boolean recieverOn;
 
     private ProgressBar mProgressBar;
 
@@ -33,7 +34,6 @@ public class GameActivity extends ActionBarActivity {
     private final String COLD = "Cold: ";
     private final String VERY_COLD = "Very cold: ";
     private final String GAME_FINISHED = "Game finished. You've reached the point! ";
-
 
 
     @Override
@@ -57,6 +57,7 @@ public class GameActivity extends ActionBarActivity {
         super.onResume();
         receiver = new CompassBroadReceiver();
         registerReceiver(receiver, new IntentFilter(SensorsService.ACTION_NEWDATA));
+        recieverOn = true;
         Intent sensorsStart = new Intent(this, SensorsService.class);
         if (destLL != null)
             sensorsStart.putExtra(MapActivity.EXTRA_LATLNG, destLL);
@@ -68,7 +69,10 @@ public class GameActivity extends ActionBarActivity {
     protected void onPause() {
         Intent sensorsStop = new Intent(this, SensorsService.class);
         stopService(sensorsStop);
-        unregisterReceiver(receiver);
+        if (recieverOn) {
+            unregisterReceiver(receiver);
+            recieverOn=false;
+        }
         super.onPause();
     }
 
@@ -95,6 +99,10 @@ public class GameActivity extends ActionBarActivity {
             configProgressBar(R.drawable.vertical_very_hot, "#FF0000", GAME_FINISHED, gameResult);
             Intent sensorsStop = new Intent(this, SensorsService.class);
             stopService(sensorsStop);
+            if (recieverOn) {
+                unregisterReceiver(receiver);
+                recieverOn=false;
+            }
         } else if (gameResult > 150) {
             configProgressBar(R.drawable.vertical_very_hot, "#FF0000", VERY_HOT, gameResult);
         } else if (gameResult <= 150 && gameResult >= 100) {
